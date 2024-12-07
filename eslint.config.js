@@ -7,7 +7,6 @@ import pluginVue from "eslint-plugin-vue"
 const fixedVueConfig = pluginVue.configs["flat/essential"]
 fixedVueConfig[2].files = ["*.vue", "**/*.vue"]
 
-console.log(vueTsEslintConfig())
 export default [
   {
     ignores: ["**/dist/**"],
@@ -43,6 +42,7 @@ export default [
   },
 
   {
+    files: ["**/*.ts", "**/*.js", "**/*.vue"],
     plugins: {
       perfectionist,
     },
@@ -53,7 +53,10 @@ export default [
     },
   },
 
-  stylistic.configs.customize({
-    quotes: "double",
-  }),
+  {
+    files: ["**/*.ts", "**/*.js", "**/*.vue"],
+    ...stylistic.configs.customize({
+      quotes: "double",
+    }),
+  },
 ]
