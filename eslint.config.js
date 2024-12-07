@@ -1,22 +1,20 @@
-import pluginVue from 'eslint-plugin-vue'
+import json from "@eslint/json"
 import vueTsEslintConfig from '@vue/eslint-config-typescript'
-import json from "@eslint/json";
+import perfectionist from 'eslint-plugin-perfectionist'
+import pluginVue from 'eslint-plugin-vue'
 
+const fixedVueConfig = pluginVue.configs['flat/essential']
+fixedVueConfig[2].files = [ '*.vue', '**/*.vue' ]
+
+console.log(vueTsEslintConfig())
 export default [
   {
-    name: 'app/files-to-lint',
-    files: ['**/*.{ts,mts,tsx,vue}'],
+    ignores: ['**/dist/**'],
   },
+  ...fixedVueConfig,
+	...vueTsEslintConfig(),
 
   {
-    name: 'app/files-to-ignore',
-    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
-  },
-
-  ...pluginVue.configs['flat/essential'],
-  ...vueTsEslintConfig(),
-
-	{
 		plugins: {
 			json,
 		},
@@ -42,4 +40,15 @@ export default [
 			...json.configs.recommended.rules,
 		}
 	},
+
+	{
+		plugins: {
+      perfectionist,
+    },
+		rules: {
+      ...perfectionist.configs['recommended-natural'].rules,
+			'perfectionist/sort-interfaces': ['error', { partitionByNewLine: true, 'type': 'natural' }],
+      'perfectionist/sort-objects': ['error', { 'partitionByNewLine': true, 'type': 'natural' }],
+    },
+  },
 ]
