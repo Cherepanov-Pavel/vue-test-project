@@ -11,23 +11,15 @@ fixedVueConfig[2].files = [
 ]
 
 export default [
-	{
-		ignores: ["**/dist/**"]
-	},
+	{ ignores: ["**/dist/**"] },
 	...fixedVueConfig,
 	...vueTsEslintConfig(),
 
-	{
-		plugins: {
-			json
-		}
-	},
+	{ plugins: { json } },
 	{
 		files: ["**/*.json"],
 		language: "json/json",
-		rules: {
-			...json.configs.recommended.rules
-		}
+		rules: { ...json.configs.recommended.rules }
 	},
 	{
 		files: [
@@ -35,16 +27,12 @@ export default [
 			".vscode/*.json"
 		],
 		language: "json/jsonc",
-		rules: {
-			...json.configs.recommended.rules
-		}
+		rules: { ...json.configs.recommended.rules }
 	},
 	{
 		files: ["**/*.json5"],
 		language: "json/json5",
-		rules: {
-			...json.configs.recommended.rules
-		}
+		rules: { ...json.configs.recommended.rules }
 	},
 
 	{
@@ -53,18 +41,22 @@ export default [
 			"**/*.js",
 			"**/*.vue"
 		],
-		plugins: {
-			perfectionist
-		},
+		plugins: { perfectionist },
 		rules: {
 			...perfectionist.configs["recommended-natural"].rules,
 			"perfectionist/sort-interfaces": [
 				"error",
-				{ partitionByNewLine: true, type: "natural" }
+				{
+					partitionByNewLine: true,
+					type: "natural"
+				}
 			],
 			"perfectionist/sort-objects": [
 				"error",
-				{ partitionByNewLine: true, type: "natural" }
+				{
+					partitionByNewLine: true,
+					type: "natural"
+				}
 			]
 		}
 	},
@@ -75,18 +67,22 @@ export default [
 			"**/*.js",
 			"**/*.vue"
 		],
-		plugins: {
-			"@stylistic": stylistic
-		},
+		plugins: { "@stylistic": stylistic },
 		rules: {
-			...stylistic.configs['recommended-flat'].rules,
+			...stylistic.configs["recommended-flat"].rules,
 			"@stylistic/array-bracket-newline": [
 				"error",
-				{ minItems: 2, "multiline": true }
+				{
+					minItems: 2,
+					multiline: true
+				}
 			],
 			"@stylistic/array-element-newline": [
 				"error",
-				{ minItems: 2, "multiline": true }
+				{
+					minItems: 2,
+					multiline: true
+				}
 			],
 			"@stylistic/arrow-parens": [
 				"error",
@@ -94,7 +90,10 @@ export default [
 			],
 			"@stylistic/arrow-spacing": [
 				"error",
-				{ "after": true, "before": true }
+				{
+					after: true,
+					before: true
+				}
 			],
 			"@stylistic/block-spacing": [
 				"error",
@@ -110,13 +109,20 @@ export default [
 			],
 			"@stylistic/comma-spacing": [
 				"error",
-				{ "after": true, "before": false }
+				{
+					after: true,
+					before: false
+				}
 			],
 			"@stylistic/comma-style": [
 				"error",
 				"last"
 			],
 			"@stylistic/computed-property-spacing": [
+				"error",
+				"never"
+			],
+			"@stylistic/eol-last": [
 				"error",
 				"never"
 			],
@@ -127,6 +133,18 @@ export default [
 			"@stylistic/multiline-comment-style": [
 				"error",
 				"separate-lines"
+			],
+			"@stylistic/no-tabs": "off",
+			"@stylistic/object-curly-newline": [
+				"error",
+				{
+					minProperties: 2,
+					multiline: true
+				}
+			],
+			"@stylistic/object-property-newline": [
+				"error",
+				{ allowAllPropertiesOnSameLine: false }
 			],
 			"@stylistic/quotes": [
 				"error",
