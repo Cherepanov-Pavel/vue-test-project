@@ -1,7 +1,10 @@
 {
-  "recommendations": [
-    "Vue.volar",
-    "dbaeumer.vscode-eslint",
-    "EditorConfig.EditorConfig"
-  ]
+	"recommendations": [
+		"vue.volar",
+		"dbaeumer.vscode-eslint",
+		"editorConfig.editorConfig",
+		"streetsidesoftware.code-spell-checker",
+		"eamodio.gitlens",
+		"johnsoncodehk.vscode-tsconfig-helper"
+	]
 }
