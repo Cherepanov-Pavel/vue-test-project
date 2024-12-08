@@ -2,8 +2,15 @@
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
 		"tsconfig.json": "tsconfig.*.json",
-		"package.json": "bun.lockb, .eslint.config.js, .editorconfig"
+		"package.json": "bun.lockb, eslint.config.js, .editorconfig"
 	},
+
+	"javascript.preferences.importModuleSpecifier": "non-relative",
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+	"typescript.tsdk": "./node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"vue.complete.casing.props": "camel",
+	"vue.complete.casing.tags": "pascal",
 
 	"editor.formatOnSave": false,
 	"editor.codeActionsOnSave": {

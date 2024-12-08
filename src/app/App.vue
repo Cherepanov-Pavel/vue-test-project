@@ -2,11 +2,11 @@
 </script>
 
 <template>
-  <header>
-  </header>
-
-  <main>
-  </main>
+ <RouterView v-slot="{ Component }">
+  <KeepAlive>
+    <component :is="Component" />
+  </KeepAlive>
+</RouterView>
 </template>
 
 <style module>

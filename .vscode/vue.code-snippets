@@ -11,6 +11,5 @@
 			"<style module lang=\"css\">",
 			"</style>"
 		],
-		"description": "Creates a basic Vue component template"
 	}
 }
