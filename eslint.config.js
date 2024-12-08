@@ -12,31 +12,31 @@ fixedVueConfig[2].files = [
 ]
 
 export default [
-	{ ignores: ["**/dist/**"] },
+	{"ignores": ["**/dist/**"]},
 	...fixedVueConfig,
 	...vueTsEslintConfig(),
 
 	{
-		files: [
+		"files": [
 			"**/*.ts",
 			"**/*.js",
 			"**/*.vue"
 		],
-		plugins: { "@stylistic": stylistic },
-		rules: {
+		"plugins": {"@stylistic": stylistic},
+		"rules": {
 			...stylistic.configs["recommended-flat"].rules,
 			"@stylistic/array-bracket-newline": [
 				"error",
 				{
-					minItems: 2,
-					multiline: true
+					"minItems": 2,
+					"multiline": true
 				}
 			],
 			"@stylistic/array-element-newline": [
 				"error",
 				{
-					minItems: 2,
-					multiline: true
+					"minItems": 2,
+					"multiline": true
 				}
 			],
 			"@stylistic/arrow-parens": [
@@ -46,8 +46,8 @@ export default [
 			"@stylistic/arrow-spacing": [
 				"error",
 				{
-					after: true,
-					before: true
+					"after": true,
+					"before": true
 				}
 			],
 			"@stylistic/block-spacing": [
@@ -65,8 +65,8 @@ export default [
 			"@stylistic/comma-spacing": [
 				"error",
 				{
-					after: true,
-					before: false
+					"after": true,
+					"before": false
 				}
 			],
 			"@stylistic/comma-style": [
@@ -93,13 +93,21 @@ export default [
 			"@stylistic/object-curly-newline": [
 				"error",
 				{
-					minProperties: 2,
-					multiline: true
+					"minProperties": 2,
+					"multiline": true
 				}
+			],
+			"@stylistic/object-curly-spacing": [
+				"error",
+				"never"
 			],
 			"@stylistic/object-property-newline": [
 				"error",
-				{ allowAllPropertiesOnSameLine: false }
+				{"allowAllPropertiesOnSameLine": false}
+			],
+			"@stylistic/quote-props": [
+				"error",
+				"always"
 			],
 			"@stylistic/quotes": [
 				"error",
@@ -108,49 +116,49 @@ export default [
 		}
 	},
 	{
-		files: [
+		"files": [
 			"**/*.ts",
 			"**/*.js",
 			"**/*.vue"
 		],
-		plugins: { perfectionist },
-		rules: {
+		"plugins": {perfectionist},
+		"rules": {
 			...perfectionist.configs["recommended-natural"].rules,
 			"perfectionist/sort-interfaces": [
 				"error",
 				{
-					partitionByNewLine: true,
-					type: "natural"
+					"partitionByNewLine": true,
+					"type": "natural"
 				}
 			],
 			"perfectionist/sort-objects": [
 				"error",
 				{
-					partitionByNewLine: true,
-					type: "natural"
+					"partitionByNewLine": true,
+					"type": "natural"
 				}
 			]
 		}
 	},
 
-	{ plugins: { json } },
+	{"plugins": {json}},
 	{
-		files: ["**/*.json"],
-		language: "json/json",
-		rules: { ...json.configs.recommended.rules }
+		"files": ["**/*.json"],
+		"language": "json/json",
+		"rules": {...json.configs.recommended.rules}
 	},
 	{
-		files: [
+		"files": [
 			"**/*.jsonc",
 			".vscode/*.json"
 		],
-		language: "json/jsonc",
-		rules: { ...json.configs.recommended.rules }
+		"language": "json/jsonc",
+		"rules": {...json.configs.recommended.rules}
 	},
 	{
-		files: ["**/*.json5"],
-		language: "json/json5",
-		rules: { ...json.configs.recommended.rules }
+		"files": ["**/*.json5"],
+		"language": "json/json5",
+		"rules": {...json.configs.recommended.rules}
 	},
 
 	...markdown.configs.recommended
