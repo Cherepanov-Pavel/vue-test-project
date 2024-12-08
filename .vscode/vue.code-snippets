@@ -1,0 +1,16 @@
+{
+	"New Vue File Template": {
+		"prefix": "vue",
+		"body": [
+			"<script setup lang=\"ts\">",
+			"</script>",
+			"",
+			"<template>",
+			"</template>",
+			"",
+			"<style module lang=\"css\">",
+			"</style>"
+		],
+		"description": "Creates a basic Vue component template"
+	}
+}

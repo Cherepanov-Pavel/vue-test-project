@@ -117,8 +117,8 @@ export default [
 	},
 	{
 		"files": [
-			"**/*.ts",
 			"**/*.js",
+			"**/*.ts",
 			"**/*.vue"
 		],
 		"plugins": {perfectionist},
@@ -137,6 +137,29 @@ export default [
 					"partitionByNewLine": true,
 					"type": "natural"
 				}
+			]
+		}
+	},
+	{
+		"files": ["**/*.vue"],
+		"rules": {
+			"vue/block-lang": [
+				"error",
+				{"script": {"lang": "ts"}}
+			],
+			"vue/block-order": [
+				"error",
+				{
+					"order": [
+						"script",
+						"template",
+						"style"
+					]
+				}
+			],
+			"vue/component-api-style": [
+				"error",
+				["script-setup"]
 			]
 		}
 	},
