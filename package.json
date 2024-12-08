@@ -20,6 +20,7 @@
 	},
 	"devDependencies": {
 		"@eslint/json": "^0.8.0",
+		"@eslint/markdown": "^6.2.1",
 		"@stylistic/eslint-plugin": "2.11.0",
 		"@tsconfig/node22": "22.0.0",
 		"@types/node": "22.9.3",
