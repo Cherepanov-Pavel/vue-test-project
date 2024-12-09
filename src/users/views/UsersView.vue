@@ -1,8 +1,21 @@
 <script setup lang="ts">
+import AppLink from '@/app/components/AppLink.vue'
+import AppButton from '@/app/components/buttons/AppButton.vue'
+import {
+	usersListAvailableTabs, UsersListAvailableTabs
+} from '@/users/shared/consts'
 import {
 	computed,
 	ref
 } from 'vue'
+
+const {
+	tab,
+	userId
+} = defineProps<{
+	'tab': UsersListAvailableTabs
+	'userId'?: number
+}>()
 
 // Types for Client and state
 interface Client {
@@ -12,7 +25,6 @@ interface Client {
 	'name': string
 }
 
-const selectedTab = ref<'clients' | 'rating'>('clients')
 const clients = ref<Client[]>([
 	{
 		'avatar': 'https://via.placeholder.com/50',
@@ -83,12 +95,25 @@ const updateClientList = () => {
 </script>
 
 <template>
-  <div class="client-dashboard">
-    <!-- Sidebar -->
-		<div class="sidebar">
-      <div class="tabs">
-        <button :class="{ active: selectedTab === 'clients' }" @click="selectedTab = 'clients'">Clients</button>
-        <button :class="{ active: selectedTab === 'rating' }" @click="selectedTab = 'rating'">Rating</button>
+  <div :class="$style['users-view']">
+		<div :class="$style['sidebar']">
+      <div :class="$style['tabs']">
+				<template
+					v-for="usersListAvailableTab in usersListAvailableTabs"
+					:key="usersListAvailableTab"
+				>
+					<AppLink :to="{
+						name: 'Users',
+						params: { userId, tab: usersListAvailableTab }
+					}">
+						<AppButton :class="[
+							'tab-selector',
+							{selected: tab === usersListAvailableTab}
+						]">
+							{{ usersListAvailableTab }}
+						</AppButton>
+					</AppLink>
+				</template>
       </div>
       <div v-if="selectedTab === 'clients'" class="client-list">
         <input type="text" v-model="searchQuery" placeholder="Enter username to search" />
@@ -129,7 +154,7 @@ const updateClientList = () => {
 </template>
 
 <style module lang="css">
-.client-dashboard {
+.users-view {
   display: flex;
 }
 
@@ -140,7 +165,17 @@ const updateClientList = () => {
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.tabs button {
+.tabs {
+	display: flex;
+}
+.tabs :global(.tab-selector){
+	color: black;
+	background-color:cadetblue;
+}
+.tabs :global(.tab-selector.selected) {
+  background-color: white;
+}
+/* .tabs button {
   width: 100%;
   padding: 10px;
   text-align: left;
@@ -230,5 +265,5 @@ button {
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
-}
+} */
 </style>

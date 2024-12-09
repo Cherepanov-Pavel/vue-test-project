@@ -11,6 +11,7 @@
 	"typescript.enablePromptUseWorkspaceTsdk": true,
 	"vue.complete.casing.props": "camel",
 	"vue.complete.casing.tags": "pascal",
+	"vue.inlayHints.vBindShorthand": false,
 
 	"editor.formatOnSave": false,
 	"editor.codeActionsOnSave": {
