@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AppLink from '@/app/components/AppLink.vue'
 import AppButton from '@/app/components/buttons/AppButton.vue'
+import AppInput from '@/app/components/inputs/AppInput.vue'
 import {
 	usersListAvailableTabs, UsersListAvailableTabs
 } from '@/users/shared/consts'
@@ -97,60 +98,35 @@ const updateClientList = () => {
 <template>
   <div :class="$style['users-view']">
 		<div :class="$style['sidebar']">
-      <div :class="$style['tabs']">
-				<template
-					v-for="usersListAvailableTab in usersListAvailableTabs"
-					:key="usersListAvailableTab"
-				>
-					<AppLink :to="{
-						name: 'Users',
-						params: { userId, tab: usersListAvailableTab }
-					}">
-						<AppButton :class="[
-							'tab-selector',
-							{selected: tab === usersListAvailableTab}
-						]">
-							{{ usersListAvailableTab }}
-						</AppButton>
-					</AppLink>
-				</template>
+      <div :class="$style['header']">
+				<div :class="$style['tabs']">
+					<template
+						v-for="usersListAvailableTab in usersListAvailableTabs"
+						:key="usersListAvailableTab"
+					>
+						<AppLink :to="{
+							name: 'Users',
+							params: { userId, tab: usersListAvailableTab }
+						}">
+							<AppButton :class="[
+								'tab-selector',
+								{selected: tab === usersListAvailableTab}
+							]">
+								{{ usersListAvailableTab }}
+							</AppButton>
+						</AppLink>
+					</template>
+				</div>
+				<AppInput
+					v-model="searchQuery"
+					placeholder="Enter username to search"
+				/>
       </div>
-      <div v-if="selectedTab === 'clients'" class="client-list">
-        <input type="text" v-model="searchQuery" placeholder="Enter username to search" />
-        <ul>
-          <li
-            v-for="client in filteredClients"
-            :key="client.id"
-            @click="selectClient(client)"
-            :class="{ selected: client.id === selectedClient?.id }"
-          >
-            <img :src="client.avatar" alt="Client Avatar" />
-            {{ client.name }}
-          </li>
-        </ul>
-        <button @click="updateClientList">Update list</button>
-      </div>
-      <div v-if="selectedTab === 'rating'" class="rating-section">
-        <!-- Rating content will go here -->
-      </div>
-    </div>
+			<div :class="$style['users-list']">
 
-    <!-- Main content (Client Details) -->
-    <div class="main-content">
-      <div v-if="selectedClient" class="client-info">
-        <img :src="selectedClient.avatar" alt="Client Avatar" class="client-avatar" />
-        <h2>{{ selectedClient.name }}</h2>
-        <p>{{ selectedClient.email }}</p>
-        <div class="rating">
-          <button @click="updateRating(-1)">-</button>
-          <span>{{ rating }} points</span>
-          <button @click="updateRating(1)">+</button>
-        </div>
-        <textarea v-model="notes" placeholder="Add a note"></textarea>
-        <button @click="saveClientDetails">Save</button>
-      </div>
-    </div>
-  </div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <style module lang="css">
@@ -159,10 +135,15 @@ const updateClientList = () => {
 }
 
 .sidebar {
-  width: 250px;
   padding: 20px;
   background-color: #f5f5f5;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.header{
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
 }
 
 .tabs {
@@ -171,9 +152,15 @@ const updateClientList = () => {
 .tabs :global(.tab-selector){
 	color: black;
 	background-color:cadetblue;
+	padding: 2px 22px
 }
 .tabs :global(.tab-selector.selected) {
   background-color: white;
+}
+
+.users-list{
+	display: flex;
+	flex-direction: column;
 }
 /* .tabs button {
   width: 100%;

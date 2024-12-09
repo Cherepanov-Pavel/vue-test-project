@@ -34,6 +34,7 @@ withDefaults(defineProps<Props>(), {
   display: flex;
   justify-content: center;
 	cursor: pointer;
+	width: 100%;
 }
 
 .app-button:disabled {

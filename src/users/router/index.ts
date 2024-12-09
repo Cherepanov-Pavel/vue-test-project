@@ -30,7 +30,7 @@ export const usersRoutes: RouteRecordRaw[] = [
 		'path': '/users/:tab?/:userId(\\d+)?',
 		'props': (route) => ({
 			'tab': route.params.tab,
-			'userId': route.params.userId ? +route.params.userId : route.params.userId
+			'userId': route.params.userId ? +route.params.userId : undefined
 		})
 	}
 ]

@@ -52,5 +52,6 @@ const externalLink = computed<false | string>(() =>
 .app-link{
 	text-decoration: none;
 	color: inherit;
+	width: 100%;
 }
 </style>
