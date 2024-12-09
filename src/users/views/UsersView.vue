@@ -1,10 +1,19 @@
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
 import AppLink from '@/app/components/AppLink.vue'
 import AppButton from '@/app/components/buttons/AppButton.vue'
 import AppInput from '@/app/components/inputs/AppInput.vue'
 import {
-	usersListAvailableTabs, UsersListAvailableTabs
+	getUsers, type User
+} from '@/users/api'
+import {
+	type AdditionalUsersDataInStorage, usersListAvailableTabs,
+	UsersListAvailableTabs,
+	type UserWithAdditionalData
 } from '@/users/shared/consts'
+import {
+	useLocalStorage, useStorage
+} from '@vueuse/core'
 import {
 	computed,
 	ref
@@ -18,81 +27,62 @@ const {
 	'userId'?: number
 }>()
 
-// Types for Client and state
-interface Client {
-	'avatar': string
-	'email': string
-	'id': number
-	'name': string
-}
+const {
+	data,
+	error,
+	execute,
+	isLoading
+} = getUsers()
+execute()
 
-const clients = ref<Client[]>([
-	{
-		'avatar': 'https://via.placeholder.com/50',
-		'email': 'george@example.com',
-		'id': 1,
-		'name': 'George Edwards'
-	},
-	{
-		'avatar': 'https://via.placeholder.com/50',
-		'email': 'lindsay@example.com',
-		'id': 2,
-		'name': 'Lindsay Ferguson'
-	},
-	{
-		'avatar': 'https://via.placeholder.com/50',
-		'email': 'tobias@example.com',
-		'id': 3,
-		'name': 'Tobias Funke'
-	},
-	{
-		'avatar': 'https://via.placeholder.com/50',
-		'email': 'rachel@example.com',
-		'id': 4,
-		'name': 'Rachel Howard'
-	},
-	{
-		'avatar': 'https://via.placeholder.com/50',
-		'email': 'michael@example.com',
-		'id': 5,
-		'name': 'Michael Lawson'
-	}
-])
+const users = computed(() => {
+	if (!data.value) return []
+	return data.value.data
+})
 
-const selectedClient = ref<Client | null>(null)
 const searchQuery = ref('')
-const rating = ref(5)
-const notes = ref('')
+const filteredUsers = computed(() => {
+	const normalizedSearchQuery = searchQuery.value.toLowerCase()
+	return users.value.filter((user) => {
+		return (
+			user.first_name.toLowerCase().includes(normalizedSearchQuery) ||
+			user.last_name.toLowerCase().includes(normalizedSearchQuery)
+		)
+	})
+})
+const filteredUsersWithDataFromLs = computed<(UserWithAdditionalData)[]>(() => {
+	const additionalUsersData = useStorage<AdditionalUsersDataInStorage | Record<string, never>>('users', {})
 
-// Computed property for filtering clients based on the search query
-const filteredClients = computed(() =>
-	clients.value.filter((client) =>
-		client.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-	)
-)
-
-// Methods
-const selectClient = (client: Client) => {
-	selectedClient.value = client
-	notes.value = '' // Clear notes when a new client is selected
-}
-
-const updateRating = (amount: number) => {
-	rating.value += amount
-	if (rating.value < 0) rating.value = 0 // Prevent negative rating
-}
-
-const saveClientDetails = () => {
-	if (selectedClient.value) {
-		// Save logic here (e.g., send the data to the server)
-		alert(`Saved: ${selectedClient.value.name} - Rating: ${rating.value} points`)
+	return filteredUsers.value.map((user) => {
+		return {
+			...user,
+			...(
+				(additionalUsersData.value as AdditionalUsersDataInStorage)?.[`${user.id}`] ||
+				{
+					'comment': '',
+					'rating': 0
+				}
+			)
+		}
+	})
+})
+const filteredAndSortedUsers = computed(() => {
+	switch (tab) {
+		case UsersListAvailableTabs.Clients:
+			return filteredUsersWithDataFromLs.value.toSorted((a, b) => {
+				if (a.last_name.toLowerCase() < b.last_name.toLowerCase()) return -1
+				if (a.last_name.toLowerCase() > b.last_name.toLowerCase()) return 1
+				return 0
+			})
+		case UsersListAvailableTabs.Rating:
+			return filteredUsersWithDataFromLs.value.toSorted((a, b) => {
+				return b.rating - a.rating
+			})
+		default:
+			console.error('wrong param in tab props')
+			return []
 	}
-}
-
-const updateClientList = () => {
-	// Client list update logic (e.g., fetching new data from an API)
-	alert('Client list updated!')
-}
+})
 </script>
 
 <template>
@@ -123,7 +113,9 @@ const updateClientList = () => {
 				/>
       </div>
 			<div :class="$style['users-list']">
-
+				<div>
+					{{ filteredAndSortedUsers }}
+				</div>
 			</div>
 		</div>
 	</div>

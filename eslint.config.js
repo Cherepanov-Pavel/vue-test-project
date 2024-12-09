@@ -19,7 +19,14 @@ export default [
 	{
 		'files': [
 			'**/*.ts',
+			'**/*.vue'
+		],
+		'rules': {'@typescript-eslint/no-unused-vars': 'warn'}
+	},
+	{
+		'files': [
 			'**/*.js',
+			'**/*.ts',
 			'**/*.vue'
 		],
 		'plugins': {'@stylistic': stylistic},
