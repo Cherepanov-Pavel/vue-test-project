@@ -207,6 +207,7 @@ const updateClientList = () => {
 
 .rating {
   margin: 10px 0;
+	flex: 55px 0 0;
 }
 
 textarea {

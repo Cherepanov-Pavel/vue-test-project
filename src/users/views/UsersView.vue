@@ -174,16 +174,20 @@ watch([
 <style module lang="css">
 .users-view {
   display: flex;
+	overflow-x: scroll;
 }
 
 .sidebar {
   padding: 20px;
   background-color: #f5f5f5;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-	height: 100vh;
+	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
-	flex: 300px 0 0;
+	gap: 30px;
+	flex: 300px 0 1;
+	overflow-y: auto;
+	min-width: 216px;
 }
 
 .header{
@@ -222,6 +226,7 @@ watch([
 	align-items: center;
 	flex: 100% 0 1;
 	background-color: lightgray;
+	min-width: 500px;
 }
 
 .selected-user > .empty-state{
