@@ -3,21 +3,24 @@
 import AppLink from '@/app/components/AppLink.vue'
 import AppButton from '@/app/components/buttons/AppButton.vue'
 import AppInput from '@/app/components/inputs/AppInput.vue'
+import router from '@/app/router'
 import {
-	getUsers, type User
+	getUsers,
+	type User
 } from '@/users/api'
+import SelectedUser from '@/users/components/SelectedUser.vue'
 import UsersListItem from '@/users/components/UsersListItem.vue'
 import {
-	type AdditionalUsersDataInStorage, usersListAvailableTabs,
+	type AdditionalUsersDataInStorage,
+	usersListAvailableTabs,
 	UsersListAvailableTabs,
 	type UserWithAdditionalData
 } from '@/users/shared/consts'
-import {
-	useLocalStorage, useStorage
-} from '@vueuse/core'
+import {useStorage} from '@vueuse/core'
 import {
 	computed,
-	ref
+	ref,
+	watch
 } from 'vue'
 
 const {
@@ -40,21 +43,10 @@ const users = computed(() => {
 	if (!data.value) return []
 	return data.value.data
 })
-
-const searchQuery = ref('')
-const filteredUsers = computed(() => {
-	const normalizedSearchQuery = searchQuery.value.toLowerCase()
-	return users.value.filter((user) => {
-		return (
-			user.first_name.toLowerCase().includes(normalizedSearchQuery) ||
-			user.last_name.toLowerCase().includes(normalizedSearchQuery)
-		)
-	})
-})
-const filteredUsersWithDataFromLs = computed<(UserWithAdditionalData)[]>(() => {
+const usersWithAdditionalData = computed<(UserWithAdditionalData)[]>(() => {
 	const additionalUsersData = useStorage<AdditionalUsersDataInStorage | Record<string, never>>('users', {})
 
-	return filteredUsers.value.map((user) => {
+	return users.value.map((user) => {
 		return {
 			...user,
 			...(
@@ -67,16 +59,27 @@ const filteredUsersWithDataFromLs = computed<(UserWithAdditionalData)[]>(() => {
 		}
 	})
 })
-const filteredAndSortedUsers = computed(() => {
+
+const searchQuery = ref('')
+const usersWithAdditionalDataAndFiltered = computed(() => {
+	const normalizedSearchQuery = searchQuery.value.toLowerCase()
+	return usersWithAdditionalData.value.filter((user) => {
+		return (
+			user.first_name.toLowerCase().includes(normalizedSearchQuery) ||
+			user.last_name.toLowerCase().includes(normalizedSearchQuery)
+		)
+	})
+})
+const usersWithAdditionalDataAndFilteredAndSorted = computed(() => {
 	switch (tab) {
 		case UsersListAvailableTabs.Clients:
-			return filteredUsersWithDataFromLs.value.toSorted((a, b) => {
+			return usersWithAdditionalDataAndFiltered.value.toSorted((a, b) => {
 				if (a.last_name.toLowerCase() < b.last_name.toLowerCase()) return -1
 				if (a.last_name.toLowerCase() > b.last_name.toLowerCase()) return 1
 				return 0
 			})
 		case UsersListAvailableTabs.Rating:
-			return filteredUsersWithDataFromLs.value.toSorted((a, b) => {
+			return usersWithAdditionalDataAndFiltered.value.toSorted((a, b) => {
 				return b.rating - a.rating
 			})
 		default:
@@ -85,7 +88,22 @@ const filteredAndSortedUsers = computed(() => {
 	}
 })
 
-const selectedUserId = ref<null | User['id']>(null)
+const selectedUser = ref<null | UserWithAdditionalData>(null)
+watch([
+	() => userId,
+	usersWithAdditionalData
+], () => {
+	if (!userId || !usersWithAdditionalData.value) return
+	const user = usersWithAdditionalData.value.find((user) => user.id === userId)
+	if (!user) {
+		router.push({
+			'name': 'Users',
+			'params': {tab}
+		})
+		return
+	}
+	selectedUser.value = user
+})
 </script>
 
 <template>
@@ -94,18 +112,21 @@ const selectedUserId = ref<null | User['id']>(null)
       <div :class="$style['header']">
 				<div :class="$style['tabs']">
 					<template
-						v-for="usersListAvailableTab in usersListAvailableTabs"
-						:key="usersListAvailableTab"
+						v-for="availableTab in usersListAvailableTabs"
+						:key="availableTab"
 					>
 						<AppLink :to="{
 							name: 'Users',
-							params: { userId, tab: usersListAvailableTab }
+							params: {
+								userId,
+								tab: availableTab
+							}
 						}">
 							<AppButton :class="[
 								'tab-selector',
-								{selected: tab === usersListAvailableTab}
+								{selected: tab === availableTab}
 							]">
-								{{ usersListAvailableTab }}
+								{{ availableTab }}
 							</AppButton>
 						</AppLink>
 					</template>
@@ -116,14 +137,21 @@ const selectedUserId = ref<null | User['id']>(null)
 				/>
       </div>
 			<div :class="$style['users-list']">
-				<template v-for="{id, avatar, first_name, last_name, rating} in filteredAndSortedUsers" :key="id">
-					<UsersListItem
-						:avatar="tab === UsersListAvailableTabs.Clients && avatar"
-						:first_name
-						:last_name
-						:rating="tab === UsersListAvailableTabs.Rating && rating"
-						@click="selectedUserId = id"
-					/>
+				<template v-for="user in usersWithAdditionalDataAndFilteredAndSorted" :key="user.id">
+					<AppLink :to="{
+						name: 'Users',
+						params: {
+							userId: user.id,
+							tab
+						}
+					}">
+						<UsersListItem
+							:avatar="tab === UsersListAvailableTabs.Clients && user.avatar"
+							:first_name="user.first_name"
+							:last_name="user.last_name"
+							:rating="tab === UsersListAvailableTabs.Rating && user.rating"
+						/>
+					</AppLink>
 				</template>
 			</div>
 			<AppButton
@@ -134,7 +162,11 @@ const selectedUserId = ref<null | User['id']>(null)
 			</AppButton>
 		</aside>
 		<main :class="$style['selected-user']">
-			<span v-if="!selectedUserId" :class="$style['empty-state']">Select a client</span>
+			<template v-if="selectedUser">
+				<SelectedUser :user="selectedUser" />
+			</template>
+			<span v-else :class="$style['empty-state']">Select a client</span>
+
 		</main>
 	</div>
 </template>

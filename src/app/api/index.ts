@@ -1,4 +1,3 @@
-/* eslint-disable @stylistic/block-spacing */
 import {API_URL} from '@/app/shared/consts/env'
 import {
 	type StrictUseAxiosReturn,

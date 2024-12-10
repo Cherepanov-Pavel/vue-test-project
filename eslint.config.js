@@ -57,10 +57,7 @@ export default [
 					'before': true
 				}
 			],
-			'@stylistic/block-spacing': [
-				'error',
-				'always'
-			],
+			'@stylistic/block-spacing': 'off',
 			'@stylistic/brace-style': [
 				'error',
 				'1tbs'
