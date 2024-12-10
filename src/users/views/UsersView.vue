@@ -6,6 +6,7 @@ import AppInput from '@/app/components/inputs/AppInput.vue'
 import {
 	getUsers, type User
 } from '@/users/api'
+import UsersListItem from '@/users/components/UsersListItem.vue'
 import {
 	type AdditionalUsersDataInStorage, usersListAvailableTabs,
 	UsersListAvailableTabs,
@@ -83,11 +84,13 @@ const filteredAndSortedUsers = computed(() => {
 			return []
 	}
 })
+
+const selectedUserId = ref<null | User['id']>(null)
 </script>
 
 <template>
   <div :class="$style['users-view']">
-		<div :class="$style['sidebar']">
+		<aside :class="$style['sidebar']">
       <div :class="$style['header']">
 				<div :class="$style['tabs']">
 					<template
@@ -113,11 +116,26 @@ const filteredAndSortedUsers = computed(() => {
 				/>
       </div>
 			<div :class="$style['users-list']">
-				<div>
-					{{ filteredAndSortedUsers }}
-				</div>
+				<template v-for="{id, avatar, first_name, last_name, rating} in filteredAndSortedUsers" :key="id">
+					<UsersListItem
+						:avatar="tab === UsersListAvailableTabs.Clients && avatar"
+						:first_name
+						:last_name
+						:rating="tab === UsersListAvailableTabs.Rating && rating"
+						@click="selectedUserId = id"
+					/>
+				</template>
 			</div>
-		</div>
+			<AppButton
+				:class="$style['update-list-button']"
+				@click="execute"
+			>
+				Update List
+			</AppButton>
+		</aside>
+		<main :class="$style['selected-user']">
+			<span v-if="!selectedUserId" :class="$style['empty-state']">Select a client</span>
+		</main>
 	</div>
 </template>
 
@@ -130,6 +148,10 @@ const filteredAndSortedUsers = computed(() => {
   padding: 20px;
   background-color: #f5f5f5;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	flex: 300px 0 0;
 }
 
 .header{
@@ -154,95 +176,24 @@ const filteredAndSortedUsers = computed(() => {
 	display: flex;
 	flex-direction: column;
 }
-/* .tabs button {
-  width: 100%;
-  padding: 10px;
-  text-align: left;
-  background-color: transparent;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
+
+.update-list-button{
+	background-color: blue;
+	color: white;
+	border: none;
+	margin-top: auto;
 }
 
-.tabs button.active {
-  font-weight: bold;
-  background-color: #e0e0e0;
+.selected-user{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex: 100% 0 1;
+	background-color: lightgray;
 }
 
-.client-list {
-  margin-top: 20px;
+.selected-user > .empty-state{
+	font-size: 40px;
+	font-weight: 700;
 }
-
-.client-list input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-}
-
-.client-list ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.client-list li {
-  display: flex;
-  align-items: center;
-  padding: 8px;
-  cursor: pointer;
-}
-
-.client-list li.selected {
-  background-color: #e0e0e0;
-}
-
-.client-list img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.main-content {
-  flex-grow: 1;
-  padding: 20px;
-}
-
-.client-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.client-info img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-}
-
-.rating {
-  margin: 10px 0;
-}
-
-textarea {
-  width: 100%;
-  height: 100px;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
-button {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-} */
 </style>
