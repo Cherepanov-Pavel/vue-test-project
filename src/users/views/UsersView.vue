@@ -1,13 +1,12 @@
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script setup lang="ts">
+import AppImgBackground from '@/app/components/AppImgBackground.vue'
 import AppLink from '@/app/components/AppLink.vue'
 import AppButton from '@/app/components/buttons/AppButton.vue'
 import AppInput from '@/app/components/inputs/AppInput.vue'
 import router from '@/app/router'
-import {
-	getUsers,
-	type User
-} from '@/users/api'
+import {getUsers} from '@/users/api'
+import SidebarOpenBackground from '@/users/assets/images/SidebarOpenBackground.png'
+import IconSidebarVector from '@/users/components/icons/IconSidebarVector.vue'
 import SelectedUser from '@/users/components/SelectedUser.vue'
 import UsersListItem from '@/users/components/UsersListItem.vue'
 import {
@@ -38,6 +37,8 @@ const {
 	isLoading
 } = getUsers()
 execute()
+
+const isSidebarOpen = ref(true)
 
 const users = computed(() => {
 	if (!data.value) return []
@@ -108,59 +109,72 @@ watch([
 
 <template>
   <div :class="$style['users-view']">
-		<aside :class="$style['sidebar']">
-      <div :class="$style['header']">
-				<div :class="$style['tabs']">
-					<template
-						v-for="availableTab in usersListAvailableTabs"
-						:key="availableTab"
-					>
+		<div :class="$style['sidebar-wrapper']">
+			<aside v-show="isSidebarOpen" :class="$style['sidebar']">
+				<div :class="$style['header']">
+					<div :class="$style['tabs']">
+						<template
+							v-for="availableTab in usersListAvailableTabs"
+							:key="availableTab"
+						>
+							<AppLink :to="{
+								name: 'Users',
+								params: {
+									userId,
+									tab: availableTab
+								}
+							}">
+								<AppButton :class="[
+									'tab-selector',
+									{selected: tab === availableTab}
+								]">
+									{{ availableTab }}
+								</AppButton>
+							</AppLink>
+						</template>
+					</div>
+					<AppInput
+						v-model="searchQuery"
+						placeholder="Enter username to search"
+					/>
+				</div>
+				<div :class="$style['users-list']">
+					<template v-for="user in usersWithAdditionalDataAndFilteredAndSorted" :key="user.id">
 						<AppLink :to="{
 							name: 'Users',
 							params: {
-								userId,
-								tab: availableTab
+								userId: user.id,
+								tab
 							}
 						}">
-							<AppButton :class="[
-								'tab-selector',
-								{selected: tab === availableTab}
-							]">
-								{{ availableTab }}
-							</AppButton>
+							<UsersListItem
+								:avatar="tab === UsersListAvailableTabs.Clients && user.avatar"
+								:first_name="user.first_name"
+								:last_name="user.last_name"
+								:rating="tab === UsersListAvailableTabs.Rating && user.rating"
+							/>
 						</AppLink>
 					</template>
 				</div>
-				<AppInput
-					v-model="searchQuery"
-					placeholder="Enter username to search"
-				/>
-      </div>
-			<div :class="$style['users-list']">
-				<template v-for="user in usersWithAdditionalDataAndFilteredAndSorted" :key="user.id">
-					<AppLink :to="{
-						name: 'Users',
-						params: {
-							userId: user.id,
-							tab
-						}
-					}">
-						<UsersListItem
-							:avatar="tab === UsersListAvailableTabs.Clients && user.avatar"
-							:first_name="user.first_name"
-							:last_name="user.last_name"
-							:rating="tab === UsersListAvailableTabs.Rating && user.rating"
-						/>
-					</AppLink>
-				</template>
-			</div>
+				<AppButton
+					:class="$style['update-list-button']"
+					@click="execute"
+				>
+					Update List
+				</AppButton>
+			</aside>
 			<AppButton
-				:class="$style['update-list-button']"
-				@click="execute"
+				:class="$style['slider-switcher-btn']"
+				@click="() => isSidebarOpen = !isSidebarOpen"
 			>
-				Update List
+				<AppImgBackground
+					:class="$style['slider-switcher']"
+					:src="SidebarOpenBackground"
+				>
+					<IconSidebarVector :isOpen="isSidebarOpen" />
+				</AppImgBackground>
 			</AppButton>
-		</aside>
+		</div>
 		<main :class="$style['selected-user']">
 			<template v-if="selectedUser">
 				<SelectedUser :user="selectedUser" />
@@ -174,9 +188,15 @@ watch([
 <style module lang="css">
 .users-view {
   display: flex;
-	overflow-x: scroll;
+	overflow-x: auto;
 }
 
+.sidebar-wrapper{
+	display: flex;
+  align-items: flex-start;
+	position: relative;
+	min-height: 100vh;
+}
 .sidebar {
   padding: 20px;
   background-color: #f5f5f5;
@@ -218,6 +238,25 @@ watch([
 	color: white;
 	border: none;
 	margin-top: auto;
+}
+
+.slider-switcher-btn{
+	outline: none;
+	border: none;
+	padding: 0;
+	position: absolute;
+	right: -27px;
+	width: 27px;
+	height: 36px;
+	align-items: center;
+	top: 14px;
+}
+.slider-switcher :global(.background-img) {
+  width: 24px;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .selected-user{
