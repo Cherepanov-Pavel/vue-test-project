@@ -21,7 +21,16 @@ const {
 <template>
 	<div :class="$style['users-list-item']">
 		<AppImg v-if="avatar" :imgSrc="avatar" :class="$style['user-avatar']"/>
-		<span v-else-if="Number.isFinite(rating)" :class="$style.rating">{{rating }}</span>
+		<div
+			v-else-if="Number.isFinite(rating)"
+			:class="$style['rating-wrapper']"
+		>
+			<span
+				:class="$style.rating"
+			>
+				{{ rating }}
+			</span>
+		</div>
 		<span>{{ first_name }}, {{ last_name }}</span>
 		<span :class="$style.arrow">→</span>
 	</div>
@@ -46,11 +55,17 @@ const {
 	width: 55px;
 }
 
-.rating{
-	font-weight: 700;
-  font-size: 30px;
+.rating-wrapper{
+	flex-shrink: 0;
 	width: 55px;
 	aspect-ratio: 1 / 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.rating-wrapper > .rating{
+	font-weight: 700;
+  font-size: 30px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
