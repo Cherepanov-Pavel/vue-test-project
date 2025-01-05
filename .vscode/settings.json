@@ -2,7 +2,8 @@
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
 		"tsconfig.json": "tsconfig.*.json",
-		"package.json": "bun.lockb, eslint.config.js, .editorconfig"
+		"package.json": "package-lock.json",
+		".editorconfig": "eslint.config.js"
 	},
 
 	"javascript.preferences.importModuleSpecifier": "non-relative",
